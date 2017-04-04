@@ -174,7 +174,7 @@ void Controller::execute_cmd(int cmd) {
 				shop.add_battery(Battery(name, model_number, cost, description, image_filename, power_available, max_energy));
 			}
 			else {
-				cerr << "*** Invalid input ***\n\n";
+				cerr << "\n\n*** Invalid input ***\n\n";
 			}
 		}
 		else if (sub_cmd == 2) {
@@ -185,11 +185,11 @@ void Controller::execute_cmd(int cmd) {
 			}
 			else
 			{
-				cout << "Insufficient number of parts.\n\n";
+				cout << "\n\nInsufficient number of parts.\n\n";
 			}
 		}
 		else
-			cout << "*** Invalid command ***\n\n";
+			cout << "\n\n*** Invalid command ***\n\n";
 	}
 	else if (cmd == 3) { // Sales Associate
 		cout << "\n\nSprint #3\n";
@@ -201,6 +201,6 @@ void Controller::execute_cmd(int cmd) {
 
 	}
 	else {
-		cerr << "*** Invalid command ***\n\n";
+		cerr << "\n\n*** Invalid command ***\n\n";
 	}
 }
