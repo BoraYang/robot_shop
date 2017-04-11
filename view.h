@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include "shop.h"
+#include "customer.h"
+#include "sales_associate.h"
 
 using namespace std;
 

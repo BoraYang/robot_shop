@@ -4,6 +4,10 @@
 #include "shop.h"
 #include "robot.h"
 #include "view.h"
+#include "customer.h"
+#include "sales_associate.h"
+#include "order.h"
+
 using namespace std;
 
 class Controller {

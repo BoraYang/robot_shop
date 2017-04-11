@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class Robot_part{
+class Robot_part {
 protected:
     string name;
     int model_number;
@@ -14,6 +14,12 @@ protected:
     string image_filename;
 public:
     Robot_part(string _name, int _model_number, double _cost, string _description, string _image_filename);
+    string get_name();
+    int get_model_number();
+    double get_cost();
+    string get_description();
+    string get_image_filename();
+    void save();
 };
 
 class Head : public Robot_part{
@@ -22,6 +28,7 @@ private:
 public:
     Head(string _name, int _model_number, double _cost, string _description, string _image_filename, double _power);
     string to_string();
+    string save();
 };
 
 class Torso : public Robot_part{
@@ -31,6 +38,7 @@ private:
 public:
     Torso(string _name, int _model_number, double _cost, string _description, string _image_filename, int _battery_compartments, int _max_arms);
     string to_string();
+    string save();
 };
 
 class Arm : public Robot_part{
@@ -39,6 +47,7 @@ private:
 public:
     Arm(string _name, int _model_number, double _cost, string _description, string _image_filename, double _max_power);
     string to_string();
+    string save();
 };
 
 class Locomotor : public Robot_part{
@@ -47,6 +56,7 @@ private:
 public:
     Locomotor(string _name, int _model_number, double _cost, string _description, string _image_filename, double _max_power);
     string to_string();
+    string save();
 };
 
 class Battery : public Robot_part{
@@ -56,6 +66,7 @@ private:
 public:
     Battery(string _name, int _model_number, double _cost, string _description, string _image_filename, double _power_availible, double _max_energy);
     string to_string();
+    string save();
 };
 
 class Robot_model{
