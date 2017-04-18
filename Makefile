@@ -1,28 +1,18 @@
-CXX = g++ -g
-CXXFLAGS = -std=c++11
+CXXFLAGS = -w -std=c++11 -I/opt/local/include 
+LDFLAGS = -L/usr/local/lib -lm -Wl, -lfltk_images -lfltk -lpthread -framework Cocoa
 
-all: main.o view.o controller.o robot.o customer.o sales_associate.o order.o shop.o
-	$(CXX) -o robot_shop main.o view.o controller.o robot.o customer.o sales_associate.o order.o shop.o 
+all: gui
 
 debug: CXXFLAGS += -g
-debug: all
+debug: gui
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
-view.o: view.cpp view.h
-	$(CXX) $(CXXFLAGS) -c view.cpp
-controller.o: controller.cpp controller.h
-	$(CXX) $(CXXFLAGS) -c controller.cpp
-robot.o: robot.cpp robot.h
-	$(CXX) $(CXXFLAGS) -c robot.cpp
-customer.o: customer.cpp customer.h
-	$(CXX) $(CXXFLAGS) -c customer.cpp
-sales_associate.o: sales_associate.cpp sales_associate.h
-	$(CXX) $(CXXFLAGS) -c sales_associate.cpp
-order.o: order.cpp order.h
-	$(CXX) $(CXXFLAGS) -c order.cpp
-shop.o: shop.cpp shop.h
-	$(CXX) $(CXXFLAGS) -c shop.cpp
+rebuild: clean gui
+
+gui: robot_shop_gui.cpp
+	$(CXX) $(CXXFLAGS) $(fltk-config --use-images --cxxflags) -o gui robot_shop_gui.cpp $(LDFLAGS)
+
+cli: robot_shop_cli.cpp
+	$(CXX) $(CXXFLAGS) -o cli robot_shop_cli.cpp
 
 clean:
-	rm -f *.o robot_shop
+	-rm -f *.o gui cli
