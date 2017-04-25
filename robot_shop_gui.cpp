@@ -13,12 +13,37 @@
 #include <FL/Fl_Multiline_Input.H>
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Button.H>
-#include <FL/fl_ask.H>
+#include <FL/Fl_ask.H>
+#include <FL/Fl_Text_Display.H>
+#include <FL/Fl_File_Chooser.H>
 
 using namespace std;
 
+
+void show_part_dialog_CB(Fl_Widget* w, void* p);
+void hide_part_dialog_CB(Fl_Widget* w, void* p);
+void show_head_dialog_CB(Fl_Widget* w, void* p);
+void hide_head_dialog_CB(Fl_Widget* w, void* p);
+void create_head_CB(Fl_Widget* w, void* p);
+void show_arm_dialog_CB(Fl_Widget* w, void* p);
+void hide_arm_dialog_CB(Fl_Widget* w, void* p);
+void create_arm_CB(Fl_Widget* w, void* p);
+void show_torso_dialog_CB(Fl_Widget* w, void* p);
+void hide_torso_dialog_CB(Fl_Widget* w, void* p);
+void create_torso_CB(Fl_Widget* w, void* p);
+void show_locomotor_dialog_CB(Fl_Widget* w, void* p);
+void hide_locomotor_dialog_CB(Fl_Widget* w, void* p);
+void create_locomotor_CB(Fl_Widget* w, void* p);
+void show_battery_dialog_CB(Fl_Widget* w, void* p);
+void hide_battery_dialog_CB(Fl_Widget* w, void* p);
+void create_battery_CB(Fl_Widget* w, void* p);
+void list_parts_CB(Fl_Widget* w, void* p);
+void show_model_dialog_CB(Fl_Widget* w, void* p);
+void hide_model_dialog_CB(Fl_Widget* w, void* p);
+void create_model_CB(Fl_Widget* w, void* p);
+
 // /////////////////////////////////
-//		   C U S T O M E R
+//		     C U S T O M E R
 // /////////////////////////////////
 
 class Customer {
@@ -77,7 +102,7 @@ void Sales_associate::save_sales_associate(ostream& ofs) {
 }
 
 // /////////////////////////////////
-//			  R O B O T
+//			      R O B O T
 // /////////////////////////////////
 
 class Robot_part {
@@ -365,7 +390,7 @@ double Robot_model::cost() {
 
 
 // /////////////////////////////////
-//			 O R D E R
+//			      O R D E R
 // /////////////////////////////////
 
 class Order {
@@ -488,6 +513,8 @@ class Shop {
 
 	string shop_to_string();
 	void save_shop(ostream& ofs);
+
+  Shop* get_shop();
 
 	private:
 	vector<Robot_model> robot_models;
@@ -764,6 +791,9 @@ void Shop::get_part(int index) {
 		add_robot_model(model);
 	}
 }
+
+
+
 // /////////////////////////////////
 //			  V I E W 
 // /////////////////////////////////
@@ -805,36 +835,31 @@ CSE1325 Robbie Robot Shop System
 
 void View::get_parts_list() {
 	cout << "\n\n## Head ##\n";
-	for (int i = 0; i < shop.number_of_heads(); i++)
-	{
+	for (int i = 0; i < shop.number_of_heads(); i++) {
 		cout << "Part number: " << i << "\n" << shop.head_to_string(i) << "\n";
 	}
 	shop.get_part(1);
 
 	cout << "\n\n## Torso ##\n";
-	for (int i = 0; i < shop.number_of_torsos(); i++)
-	{
+	for (int i = 0; i < shop.number_of_torsos(); i++)	{
 		cout << "Part number: " << i << "\n" << shop.torso_to_string(i) << "\n";
 	}
 	shop.get_part(2);
 
 	cout << "\n\n## Arm ##\n";
-	for (int i = 0; i < shop.number_of_arms(); i++)
-	{
+	for (int i = 0; i < shop.number_of_arms(); i++)	{
 		cout << "Part number: " << i << "\n" << shop.arm_to_string(i) << "\n";
 	}
 	shop.get_part(3);
 
 	cout << "\n\n## Locomotor ##\n";
-	for (int i = 0; i < shop.number_of_locomotors(); i++)
-	{
+	for (int i = 0; i < shop.number_of_locomotors(); i++)	{
 		cout << "Part number: " << i << "\n" << shop.locomotor_to_string(i) << "\n";
 	}
 	shop.get_part(4);
 
 	cout << "\n\n## Battery ##\n";
-	for (int i = 0; i < shop.number_of_batteries(); i++)
-	{
+	for (int i = 0; i < shop.number_of_batteries(); i++)	{
 		cout << "Part number: " << i << "\n" << shop.battery_to_string(i) << "\n";
 	}
 	shop.get_part(5);
@@ -842,8 +867,7 @@ void View::get_parts_list() {
 
 
 void View::get_catalog_list() {
-	for (int i = 0; i < shop.number_of_robot_models(); i++)
-	{
+	for (int i = 0; i < shop.number_of_robot_models(); i++) {
 		cout << shop.robot_model_to_string(i) << "\n\n";
 	}
 }
@@ -851,7 +875,7 @@ void View::get_catalog_list() {
 
 
 // /////////////////////////////////
-//			  S A V E
+//			      S A V E
 // /////////////////////////////////
 
 class Save {
@@ -870,13 +894,14 @@ public:
     void open_customer(string s);
     void open_sales_associate(string s);
     void open_order(string s);
+    Shop* get_shop();
 };
 
 Save::Save(){}
 
 void Save::save(string filename) {
     ofstream ofs(filename.c_str());
-	shop.save_shop(ofs);    
+	  shop.save_shop(ofs);    
 }
 
 void Save::open(string filename) {
@@ -1184,7 +1209,11 @@ void Save::open_order(string s) {
     data.clear();
 }
 
+Shop* Save::get_shop() {
+  return &shop;
+}
 
+Save save;
 
 // /////////////////////////////////
 //	   	  C O N T R O L L E R
@@ -1509,9 +1538,8 @@ void Controller::execute_cmd(int cmd) {
 }
 }
 
-
 // /////////////////////////////////
-//		   W I D G E T S
+//		      W I D G E T S
 // /////////////////////////////////
 
 Fl_Window *win;
@@ -1520,36 +1548,37 @@ Fl_Menu_Bar *menubar;
 Controller *controller_p;
 
 // /////////////////////////////////
-//		   D I A L O G S
+//		  P A R T   D I A L O G
 // /////////////////////////////////
 
-void show_robot_part_dialog_CB(Fl_Widget* w, void* p);
-void hide_robot_part_dialog_CB(Fl_Widget* w, void* p);
+void show_part_dialog_CB(Fl_Widget* w, void* p);
+void hide_part_dialog_CB(Fl_Widget* w, void* p);
 
-class robot_part_dialog {
+class part_dialog {
 	public :
-	robot_part_dialog() {
-		dialog = new Fl_Window(400,300,"Robot Parts");
+	part_dialog() {
+		dialog = new Fl_Window(600,480,"Robot Parts");
 
-		/*p_head = new Fl_Return_Button(125, 60, 100, 25, "Head");
-		p_head->callback((Fl_Callback *)show_head_dialog_CB, 0);
+		head_part = new Fl_Button(125, 60, 100, 25, "Head");
+		head_part->callback((Fl_Callback *)show_head_dialog_CB, 0);
 
-		p_torso = new Fl_Return_Button(125, 100, 100, 25, "Torso");
-		p_torso->callback((Fl_Callback *)show_torso_dialog_CB, 0);
+		torso_part = new Fl_Button(125, 100, 100, 25, "Torso");
+		torso_part->callback((Fl_Callback *)show_torso_dialog_CB, 0);
 
-		p_arm = new Fl_Return_Button(125, 140, 100, 25, "Arm");
-		p_arm->callback((Fl_Callback *)show_arm_dialogCB, 0);
+		arm_part = new Fl_Button(125, 140, 100, 25, "Arm");
+		arm_part->callback((Fl_Callback *)show_arm_dialog_CB, 0);
 
-		p_locomotor = new Fl_Return_Button(125, 180, 100, 25, "Locomotor");
-		p_locomotor->callback((Fl_Callback *)show_locomotor_dialog_CB, 0);
+		locomotor_part = new Fl_Button(125, 180, 100, 25, "Locomotor");
+		locomotor_part->callback((Fl_Callback *)show_locomotor_dialog_CB, 0);
 
-		p_battery = new Fl_Return_Button(125, 220, 100, 25, "Battery");
-		p_battery->callback((Fl_Callback *)show_battery_dialog_CB, 0); */
+		battery_part = new Fl_Button(125, 220, 100, 25, "Battery");
+		battery_part->callback((Fl_Callback *)show_battery_dialog_CB, 0);
 
-		p_cancel = new Fl_Return_Button(220, 350, 50, 25, "Cancel");
-		p_cancel->callback((Fl_Callback *) hide_robot_part_dialog_CB, 0);
+		cancel = new Fl_Return_Button(220, 350, 100, 25, "Cancel");
+		cancel->callback((Fl_Callback *) hide_part_dialog_CB, 0);
 
 		dialog->end();
+    dialog->set_non_modal();
 		}
 
 		void show() {
@@ -1561,42 +1590,794 @@ class robot_part_dialog {
 		}
 	private :
 		Fl_Window *dialog;
-		Fl_Return_Button *p_cancel;
+		Fl_Button *head_part, *torso_part, *arm_part, *locomotor_part, *battery_part;
+    Fl_Return_Button *cancel;
 };
 
-robot_part_dialog *robot_part_dialog;
+part_dialog *part_dl;
 
-void show_robot_part_dialog_CB(Fl_Widget* w, void* p) {
-	robot_part_dialog->show();
+void show_part_dialog_CB(Fl_Widget* w, void* p) {
+	part_dl->show();
 }
 
-void hide_robot_part_dialog_CB(Fl_Widget* w, void* p) {
-	robot_part_dialog->hide();
+void hide_part_dialog_CB(Fl_Widget* w, void* p) {
+	part_dl->hide();
 }
 
-void Exit_CB (Fl_Widget* w, void* p) { win -> hide();}
+void Exit_CB (Fl_Widget* w, void* p) { 
+  win -> hide();
+}
+
 
 
 // /////////////////////////////////
-//			   M E N U
+//       H E A D  D I A L O G
+// /////////////////////////////////
+
+class head_dialog {
+  public:
+    head_dialog() {
+    dialog = new Fl_Window(600, 480, "Robot Part - Head");
+
+    part_name = new Fl_Input(150, 20, 280, 25, "Name: ");
+
+    part_model_number = new Fl_Input(150, 60, 280, 25, "Model Number: ");
+
+    part_cost = new Fl_Input(150, 100, 280, 25, "Cost: ");
+
+    part_description = new Fl_Multiline_Input(150, 140, 280, 75, "Description: ");
+
+    part_image_file_name = new Fl_Input(150, 230, 280, 25, "Image File Name: ");
+
+    part_power = new Fl_Input(150, 270, 280, 25, "Power: ");
+
+    create_part = new Fl_Return_Button(150, 310, 100, 25, "Create");
+    create_part->callback((Fl_Callback *)create_head_CB, 0);
+
+    cancel = new Fl_Return_Button(300, 310, 100, 25, "Cancel");
+    cancel->callback((Fl_Callback *)hide_head_dialog_CB, 0);
+
+    dialog->end();
+    dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      part_name->value(NULL);
+      part_model_number->value(NULL);
+      part_cost->value(NULL);
+      part_description->value(NULL);
+      part_image_file_name->value(NULL);
+      part_power->value(NULL);
+    }
+
+    string name() {
+      return part_name->value();
+    }
+
+    int model_number() {
+      return atoi(part_model_number->value());
+    }
+
+    double cost() {
+      return atof(part_cost->value());
+    }
+
+    string description() {
+      return part_description->value();
+    }
+
+    string image_file_name() {
+      return part_image_file_name->value();
+    }
+
+    double power() {
+      return atof(part_power->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *part_name, *part_model_number, *part_cost, *part_description, *part_image_file_name, *part_power;
+    Fl_Return_Button *create_part, *cancel;
+};
+
+head_dialog *head_dl;
+
+void show_head_dialog_CB(Fl_Widget* w, void* p) {
+  head_dl->show();
+}
+
+void hide_head_dialog_CB(Fl_Widget* w, void* p) {
+  head_dl->hide();
+}
+
+void create_head_CB(Fl_Widget* w, void* p)
+{
+  Head head(head_dl->name(), head_dl->model_number(), head_dl->cost(), head_dl->description(), head_dl->image_file_name(), head_dl->power());
+  save.get_shop()->add_head(head);
+  fl_message("Head part created!");
+  head_dl->clear();
+  head_dl->hide();
+}
+
+
+
+// /////////////////////////////////
+//      T O R S O  D I A L O G
+// /////////////////////////////////
+
+class torso_dialog {
+  public:
+    torso_dialog() {
+    dialog = new Fl_Window(600, 480, "Robot Part - Torso");
+
+    part_name = new Fl_Input(150, 20, 280, 25, "Name: ");
+
+    part_model_number = new Fl_Input(150, 60, 280, 25, "Model Number: ");
+
+    part_cost = new Fl_Input(150, 100, 280, 25, "Cost:");
+
+    part_description = new Fl_Multiline_Input(150, 140, 280, 75, "Description: ");
+
+    part_image_file_name = new Fl_Input(150, 230, 280, 25, "Image File Name: ");
+
+    part_battery = new Fl_Input(150, 270, 280, 25, "Battery Compartments: ");
+
+    part_max_arms = new Fl_Input(150, 310, 280, 25, "Max Arms: ");
+
+    create_part = new Fl_Return_Button(150, 350, 100, 25, "Create");
+    create_part->callback((Fl_Callback *)create_torso_CB, 0);
+
+    cancel = new Fl_Return_Button(300, 350, 100, 25, "Cancel");
+    cancel->callback((Fl_Callback *)hide_torso_dialog_CB, 0);
+
+    dialog->end();
+    dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      part_name->value(NULL);
+      part_model_number->value(NULL);
+      part_cost->value(NULL);
+      part_description->value(NULL);
+      part_image_file_name->value(NULL);
+      part_battery->value(NULL);
+      part_max_arms->value(NULL);
+    }
+
+    string name() {
+      return part_name->value();
+    }
+
+    int model_number() {
+      return atoi(part_model_number->value());
+    }
+
+    int cost() {
+      return atoi(part_cost->value());
+    }
+
+    string description() {
+      return part_description->value();
+    }
+
+    string image_file_name() {
+      return part_image_file_name->value();
+    }
+
+    int battery() {
+      return atoi(part_battery->value());
+    }
+
+    int max_arms() {
+      return atoi(part_max_arms->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *part_name, *part_model_number, *part_cost, *part_description, *part_image_file_name, *part_battery, *part_max_arms;
+    Fl_Return_Button *create_part, *cancel;
+};
+
+torso_dialog *torso_dl;
+
+void show_torso_dialog_CB(Fl_Widget* w, void* p) {
+  torso_dl->show();
+}
+
+void hide_torso_dialog_CB(Fl_Widget* w, void* p) {
+  torso_dl->hide();
+}
+
+void create_torso_CB(Fl_Widget* w, void* p) {
+  Torso torso(torso_dl->name(), torso_dl->model_number(), torso_dl->cost(), torso_dl->description(), torso_dl->image_file_name(), torso_dl->battery(), torso_dl->max_arms());
+  save.get_shop()->add_torso(torso);
+  fl_message("Torso part created!");
+  torso_dl->hide();
+  torso_dl->clear();
+}
+
+
+
+// /////////////////////////////////
+//        A R M  D I A L O G
+// /////////////////////////////////
+
+class arm_dialog {
+  public:
+    arm_dialog() {
+    dialog = new Fl_Window(600, 480, "Robot Part - Arm");
+
+    part_name = new Fl_Input(150, 20, 280, 25, "Name: ");
+
+    part_model_number = new Fl_Input(150, 60, 280, 25, "Model Number: ");
+
+    part_cost = new Fl_Input(150, 100, 280, 25, "Cost: ");
+
+    part_description = new Fl_Multiline_Input(150, 140, 280, 75, "Description: ");
+
+    part_image_file_name = new Fl_Input(150, 230, 280, 25, "Image File Name: ");
+
+    part_power = new Fl_Input(150, 270, 280, 25, "Max Arm Power: ");
+
+    create_part = new Fl_Return_Button(150, 310, 100, 25, "Create");
+    create_part->callback((Fl_Callback *)create_arm_CB, 0);
+
+    cancel = new Fl_Return_Button(300, 310, 100, 25, "Cancel");
+    cancel->callback((Fl_Callback *)hide_arm_dialog_CB, 0);
+
+    dialog->end();
+    dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      part_name->value(NULL);
+      part_model_number->value(NULL);
+      part_cost->value(NULL);
+      part_description->value(NULL);
+      part_image_file_name->value(NULL);
+      part_power->value(NULL);
+    }
+
+    string name() {
+      return part_name->value();
+    }
+
+    int model_number() {
+      return atoi(part_model_number->value());
+    }
+
+    int cost() {
+      return atoi(part_cost->value());
+    }
+
+    string description() {
+      return part_description->value();
+    }
+
+    string image_file_name() {
+      return part_image_file_name->value();
+    }
+
+    double power() {
+      return atof(part_power->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *part_name, *part_model_number, *part_cost, *part_description, *part_image_file_name, *part_power;
+    Fl_Return_Button *create_part, *cancel;
+};
+
+arm_dialog *arm_dl;
+
+void show_arm_dialog_CB(Fl_Widget* w, void* p) {
+  arm_dl->show();
+}
+
+void hide_arm_dialog_CB(Fl_Widget* w, void* p) {
+  arm_dl->hide();
+}
+
+void create_arm_CB(Fl_Widget* w, void* p) {
+  Arm arm(arm_dl->name(), arm_dl->model_number(), arm_dl->cost(), arm_dl->description(), arm_dl->image_file_name(), arm_dl->power());
+  save.get_shop()->add_arm(arm);
+  fl_message("Arm part created!");
+  arm_dl->hide();
+  arm_dl->clear();
+}
+
+
+
+// /////////////////////////////////
+//  L O C O M O T O R  D I A L O G
+// /////////////////////////////////
+
+class locomotor_dialog {
+  public:
+    locomotor_dialog() {
+    dialog = new Fl_Window(600, 480, "Robot Part - Locomotor");
+
+    part_name = new Fl_Input(150, 20, 280, 25, "Name: ");
+
+    part_model_number = new Fl_Input(150, 60, 280, 25, "Model Number: ");
+
+    part_cost = new Fl_Input(150, 100, 280, 25, "Cost: ");
+
+    part_description = new Fl_Multiline_Input(150, 140, 280, 75, "Description: ");
+
+    part_image_file_name = new Fl_Input(150, 230, 280, 25, "Image File Name: ");
+
+    part_power = new Fl_Input(150, 270, 280, 25, "Max Locomotor Power: ");
+
+    create_part = new Fl_Return_Button(150, 310, 100, 25, "Create");
+    create_part->callback((Fl_Callback *)create_locomotor_CB, 0);
+
+    cancel = new Fl_Return_Button(300, 310, 100, 25, "Cancel");
+    cancel->callback((Fl_Callback *)hide_locomotor_dialog_CB, 0);
+
+    dialog->end();
+    dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      part_name->value(NULL);
+      part_model_number->value(NULL);
+      part_cost->value(NULL);
+      part_description->value(NULL);
+      part_image_file_name->value(NULL);
+      part_power->value(NULL);
+    }
+
+    string name() {
+      return part_name->value();
+    }
+
+    int model_number() {
+      return atoi(part_model_number->value());
+    }
+
+    int cost() {
+      return atoi(part_cost->value());
+    }
+
+    string description() {
+      return part_description->value();
+    }
+
+    string image_file_name() {
+      return part_image_file_name->value();
+    }
+
+    double power() {
+      return atof(part_power->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *part_name, *part_model_number, *part_cost, *part_description, *part_image_file_name, *part_power;
+    Fl_Return_Button *create_part, *cancel;
+};
+
+locomotor_dialog *locomotor_dl;
+
+void show_locomotor_dialog_CB(Fl_Widget* w, void* p) {
+  locomotor_dl->show();
+}
+
+void hide_locomotor_dialog_CB(Fl_Widget* w, void* p) {
+  locomotor_dl->hide();
+}
+
+void create_locomotor_CB(Fl_Widget* w, void* p) {
+  Locomotor locomotor(locomotor_dl->name(), locomotor_dl->model_number(), locomotor_dl->cost(), locomotor_dl->description(), locomotor_dl->image_file_name(), locomotor_dl->power());
+  save.get_shop()->add_locomotor(locomotor);
+  fl_message("Locomotor part created!");
+  locomotor_dl->hide();
+  locomotor_dl->clear();
+}
+
+
+
+// /////////////////////////////////
+//    B A T T E R Y  D I A L O G
+// /////////////////////////////////
+
+class battery_dialog
+{
+  public:
+    battery_dialog() {
+    dialog = new Fl_Window(600, 360, "Robot Part - Battery");
+
+    part_name = new Fl_Input(150, 10, 280, 25, "Name: ");
+
+    part_model_number = new Fl_Input(150, 40, 280, 25, "Model Number: ");
+
+    part_cost = new Fl_Input(150, 70, 280, 25, "Cost: ");
+
+    part_description = new Fl_Multiline_Input(150, 100, 280, 75, "Description: ");
+
+    part_image_file_name = new Fl_Input(150, 180, 280, 25, "File Name: ");
+
+    part_power = new Fl_Input(150, 220, 280, 25, "Power Available: ");
+
+    part_energy = new Fl_Input(150, 250, 280, 25, "Energy Available: ");
+
+    create_part = new Fl_Return_Button(150, 280, 100, 25, "Create");
+    create_part->callback((Fl_Callback *)create_battery_CB, 0);
+
+    cancel = new Fl_Return_Button(380, 280, 95, 25, "Cancel");
+    cancel->callback((Fl_Callback *)hide_battery_dialog_CB, 0);
+
+    dialog->end();
+    dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      part_name->value(NULL);
+      part_model_number->value(NULL);
+      part_cost->value(NULL);
+      part_description->value(NULL);
+      part_image_file_name->value(NULL);
+      part_power->value(NULL);
+      part_energy->value(NULL);
+    }
+
+    string name() {
+      return part_name->value();
+    }
+
+    int model_number() {
+      return atoi(part_model_number->value());
+    }
+
+    int cost() {
+      return atoi(part_cost->value());
+    }
+
+    string description() {
+      return part_description->value();
+    }
+
+    string image_file_name() {
+      return part_image_file_name->value();
+    }
+
+    double power() {
+      return atof(part_power->value());
+    }
+
+    double energy() {
+      return atof(part_energy->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *part_name, *part_model_number, *part_cost, *part_description, *part_image_file_name, *part_power, *part_energy;
+    Fl_Return_Button *create_part, *cancel;
+};
+
+battery_dialog *battery_dl;
+
+void show_battery_dialog_CB(Fl_Widget* w, void* p) {
+  battery_dl->show();
+}
+
+void hide_battery_dialog_CB(Fl_Widget* w, void* p) {
+  battery_dl->hide();
+}
+
+void create_battery_CB(Fl_Widget* w, void* p) {
+  Battery battery(battery_dl->name(), battery_dl->model_number(), battery_dl->cost(), battery_dl->description(), battery_dl->image_file_name(), battery_dl->power(), battery_dl->energy());
+  save.get_shop()->add_battery(battery);
+  fl_message("Battery part created!");
+  battery_dl->hide();
+  battery_dl->clear();
+}
+
+void save_CB(Fl_Widget* w, void* p) {
+  save.save("data.txt");
+}
+
+void open_CB(Fl_Widget* w, void* p) {
+  save.open("data.txt");
+}
+
+
+// /////////////////////////////////
+//      M O D E L  D I A L O G
+// /////////////////////////////////
+
+
+class model_dialog {
+  public:
+    model_dialog() {
+    dialog = new Fl_Window(600, 480, "Robot Model");
+
+    part_head_index = new Fl_Input(150, 20, 280, 25, "Head Index: ");
+
+    part_torso_index = new Fl_Input(150, 60, 280, 25, "Torso Index: ");
+
+    part_arm_index = new Fl_Input(150, 100, 280, 25, "Arm Index: ");
+
+    part_locomotor_index = new Fl_Input(150, 140, 280, 25, "Locomotor Index: ");
+
+    part_battery_index = new Fl_Input(150, 180, 280, 25, "Battery Index: ");
+
+    part_name = new Fl_Input(150, 220, 220, 25, "Model Name: ");
+
+    part_model_number = new Fl_Input(150, 260, 280, 25, "Model Number: ");
+
+    list_parts = new Fl_Return_Button(80, 300, 100, 25, "List Parts");
+    list_parts->callback((Fl_Callback *)list_parts_CB, 0);
+
+    create_part = new Fl_Return_Button(230, 300, 100, 25, "Create");
+    create_part->callback((Fl_Callback *)create_model_CB, 0);
+
+    cancel = new Fl_Return_Button(380, 300, 100, 25, "Cancel");
+    cancel->callback((Fl_Callback *)hide_model_dialog_CB, 0);
+
+    dialog->end();
+    dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      part_name->value(NULL);
+      part_head_index->value(NULL);
+      part_torso_index->value(NULL);
+      part_arm_index->value(NULL);
+      part_locomotor_index->value(NULL);
+      part_battery_index->value(NULL);
+    }
+
+    string name() {
+      return part_name->value();
+    }
+
+    int model_number() {
+      return atoi(part_model_number->value());
+    }
+
+    int head() {
+      return atoi(part_head_index->value());
+    }
+
+    int torso() {
+      return atoi(part_torso_index->value());
+    }
+
+    int arm() {
+      return atoi(part_arm_index->value());
+    }
+
+    int locomotor() {
+      return atoi(part_locomotor_index->value());
+    }
+
+    int battery() {
+      return atoi(part_battery_index->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *part_head_index, *part_torso_index, *part_arm_index, *part_locomotor_index, *part_battery_index, *part_model_number, *part_name;
+    Fl_Return_Button *list_parts, *create_part, *cancel;
+};
+
+model_dialog *model_dl;
+
+void show_model_dialog_CB(Fl_Widget* w, void* p) {
+  model_dl->show();
+}
+
+void hide_model_dialog_CB(Fl_Widget* w, void* p) {
+  model_dl->hide();
+}
+
+void create_model_CB(Fl_Widget* w, void* p) {
+  Robot_model model(model_dl->name(), model_dl->model_number(), (save.get_shop()->get_head(model_dl->head()-1)), (save.get_shop()->get_torso(model_dl->torso()-1)), (save.get_shop()->get_arm(model_dl->arm()-1)), (save.get_shop()->get_locomotor(model_dl->locomotor()-1)), (save.get_shop()->get_battery(model_dl->battery()-1)));
+  save.get_shop()->add_robot_model(model);
+  fl_message("Robot model created!");
+  model_dl->hide();
+  model_dl->clear();
+}
+
+void list_parts_CB(Fl_Widget* w, void* p)
+{
+  Fl_Window *win = new Fl_Window(640,480);
+  stringstream os;
+
+  int i = 0;
+
+  os << "## Heads ##\n";
+  for (i = 0; i < save.get_shop()->number_of_heads(); i++) {
+    os << "Part index: " << i + 1 << "\n" << save.get_shop()->head_to_string(i) << '\n\n';
+  }
+
+  os << "## Torsos ##\n";
+  for ( i= 0; i < save.get_shop()->number_of_torsos(); i++) {
+    os << "Part index: " << i + 1 << '\n' << save.get_shop()->torso_to_string(i) << '\n\n';
+  }
+
+  os << "## Arms ##\n";
+  for (i = 0; i < save.get_shop()->number_of_arms(); i++) {
+    os << "Part index: " << i + 1 << '\n' << save.get_shop()->arm_to_string(i) << '\n\n';
+  }
+
+  os << "## Locomotors ##\n";
+  for (i = 0; i < save.get_shop()->number_of_locomotors(); i++) {
+    os << "Part index: " << i + 1 << '\n' << save.get_shop()->locomotor_to_string(i) << '\n\n';
+  }
+
+  os << "## Batteries ##\n";
+  for (i = 0; i < save.get_shop()->number_of_batteries(); i++) {
+    os << "Part index: " << i + 1 << '\n' << save.get_shop()->battery_to_string(i) << '\n\n';
+  }
+
+  Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+  Fl_Text_Display *disp = new Fl_Text_Display(20, 20, 640-40, 480-40, "Robot Parts");
+  disp->buffer(buff);
+  win->resizable(*disp);
+  win->show();
+  buff->text((os.str()).c_str());
+}
+
+class list_models_dialog {
+public:
+    list_models_dialog() {}
+
+    void show() {
+        dialog = new Fl_Window(640, 520);
+
+        robot_model_number = new Fl_Input(400, 480, 210, 25, "Model Number: ");
+
+        for(int i = 0; i < save.get_shop()->number_of_robot_models(); i++) {
+            os << save.get_shop()->robot_model_to_string(i) << "\n\n";
+        }
+
+        Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+        Fl_Text_Display *disp = new Fl_Text_Display(20, 20, 640-40, 480-40, "Robot Models");
+
+        disp->buffer(buff);
+        dialog->resizable(*disp);
+        dialog->show();
+        buff->text((os.str()).c_str());
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      robot_model_number->value(NULL);
+    }
+
+    int model_number() {
+      return atoi(robot_model_number->value());
+    }
+
+private:
+    Fl_Window *dialog;
+    Fl_Input *robot_model_number;
+    Fl_Text_Buffer *buff;
+    Fl_Text_Display *disp;
+    stringstream os;
+};
+
+list_models_dialog *list_models_dl;
+
+void show_list_models_dialog_CB(Fl_Widget* w, void* p) {
+    list_models_dl->show();
+}
+
+void hide_list_models_dialog_CB(Fl_Widget* w, void* p) {
+    list_models_dl->hide();
+}
+
+
+// /////////////////////////////////
+//			      M E N U
 // /////////////////////////////////
 
 Fl_Menu_Item menuitems[] = {
   { "&File", 0, 0, 0, FL_SUBMENU },
+//    { "&New Shop", 0, (Fl_Callback *) Exit_CB },
+    { "&Load Shop", 0, (Fl_Callback *) open_CB },
+    { "&Save Shop", 0, (Fl_Callback *) save_CB },
   	{ "E&xit", 0, (Fl_Callback *) Exit_CB },
     { 0 },
+/*  { "&Edit", 0, 0, 0, FL_SUBMENU },
+    { "Cu&t", 0, (Fl_Callback *) Exit_CB },
+    { "&Copy", 0, (Fl_Callback *) Exit_CB },
+    { "&Paste", 0, (Fl_Callback *) Exit_CB },
+    { "Pre&ferences", 0, (Fl_Callback *) Exit_CB },
+    { 0 }, */
   { "&Create", 0, 0, 0, FL_SUBMENU },
-  	{ "Robot &Part", 0, (Fl_Callback *) show_robot_part_dialog_CB },
+//  	{ "&Order", 0, (Fl_Callback *) Exit_CB },
+//    { "&Customer", 0, (Fl_Callback *) Exit_CB },
+//    { "&Sales Associate", 0, (Fl_Callback *) Exit_CB },
+    { "Robot &Model", 0, (Fl_Callback *) show_model_dialog_CB },
+    { "&Robot Component", 0, (Fl_Callback *) show_part_dialog_CB },
     { 0 },
+  { "&View", 0, 0, 0, FL_SUBMENU },
+//    { "&Orders", 0, (Fl_Callback *) Exit_CB },
+//    { "&Customers", 0, (Fl_Callback *) Exit_CB },
+//    { "&Sales Associates", 0, (Fl_Callback *) Exit_CB },
+    { "Robot &Models", 0, (Fl_Callback *) show_list_models_dialog_CB },
+    { "&Robot Parts", 0, (Fl_Callback *) list_parts_CB },
+    { 0 },
+/*  { "&Tools", 0, 0, 0, FL_SUBMENU },
+    { 0 },
+  { "&Help", 0, 0, 0, FL_SUBMENU },
+    { 0 }, */
   { 0 }
 };
 
+
 // /////////////////////////////////
-//			   M A I N
+//			       M A I N
 // /////////////////////////////////
+
 int main() {
-	const int X = 700;
-	const int Y = 600;
+  const int X = 480;
+  const int Y = 300;
+
+  part_dl = new part_dialog{};
+  head_dl = new head_dialog{};
+  torso_dl = new torso_dialog{};
+  arm_dl = new arm_dialog{};
+  locomotor_dl = new locomotor_dialog{};
+  battery_dl = new battery_dialog{};
+  model_dl = new model_dialog{};
+  list_models_dl = new list_models_dialog{};
+
 	fl_register_images();
 	win = new Fl_Window(X, Y, "Robbie Robot Shop");
 		win -> color (FL_WHITE);
