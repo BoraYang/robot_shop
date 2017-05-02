@@ -15,7 +15,7 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_ask.H>
 #include <FL/Fl_Text_Display.H>
-#include <FL/Fl_File_Chooser.H>
+
 
 using namespace std;
 
@@ -41,6 +41,17 @@ void list_parts_CB(Fl_Widget* w, void* p);
 void show_model_dialog_CB(Fl_Widget* w, void* p);
 void hide_model_dialog_CB(Fl_Widget* w, void* p);
 void create_model_CB(Fl_Widget* w, void* p);
+void create_sales_associate_CB(Fl_Widget* w, void* p);
+void show_sales_associate_dialog_CB(Fl_Widget* w, void* p);
+void hide_sales_associate_dialog_CB(Fl_Widget* w, void* p);
+void create_customer_CB(Fl_Widget* w, void* p);
+void show_customer_dialog_CB(Fl_Widget* w, void* p);
+void hide_customer_dialog_CB(Fl_Widget* w, void* p);
+void create_order_dialog_CB(Fl_Widget* w, void* p);
+void list_models_dialog_CB(Fl_Widget* w, void* p);
+void show_order_dialog_CB(Fl_Widget* w, void* p);
+void hide_order_dialog_CB(Fl_Widget* w, void* p);
+
 
 // /////////////////////////////////
 //		     C U S T O M E R
@@ -78,12 +89,12 @@ void Customer::save_customer(ostream& ofs) {
 // /////////////////////////////////
 
 class Sales_associate {
-	public :
+	public:
 		Sales_associate(string _name, int _employee_number) : name(_name), employee_number(_employee_number) {}
 		string to_string();
 		int get_employee_number();
 		void save_sales_associate(ostream& ofs);
-	private :
+	private:
 		string name;
 		int employee_number;
 };
@@ -225,20 +236,19 @@ void Robot_part::save_part(ostream& ofs) {
 
 
 
-Head::Head(string _name, int _model_number, double _cost, string _description,
-             string _image_filename, double _power) : Robot_part(_name, _model_number,
-             _cost, _description, _image_filename), power(_power) {}
+Head::Head(string _name, int _model_number, double _cost, string _description, string _image_filename, double _power) :
+           Robot_part(_name, _model_number, _cost, _description, _image_filename), power(_power) {}
 
 
 string Head::to_string() {
-  string head = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
+    string head = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
                 "Description: " + description + "\n" + "Image filename: " + image_filename + "\n" + "Power: " + std::to_string(power) + "\n\n";
 
-  return head;
+    return head;
 }
 
 double Head::get_power() {
-  return power;
+    return power;
 }
 
 void Head::save_head(ostream& ofs) {
@@ -249,18 +259,17 @@ void Head::save_head(ostream& ofs) {
 
 
 
-Torso::Torso(string _name, int _model_number, double _cost, string _description,
-               string _image_filename, int _battery_compartments, int _max_arms) : Robot_part(_name, _model_number,
-               _cost, _description, _image_filename), battery_compartments(_battery_compartments), max_arms(_max_arms) {}
+Torso::Torso(string _name, int _model_number, double _cost, string _description, string _image_filename, int _battery_compartments, int _max_arms) :
+             Robot_part(_name, _model_number, _cost, _description, _image_filename), battery_compartments(_battery_compartments), max_arms(_max_arms) {}
 
 
 
 string Torso::to_string() {
-  string torso = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
+    string torso = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
                  "Description: " + description + "\n" + "Image filename: " + image_filename + "\n" + "Battery compartments: " +
                  std::to_string(battery_compartments) + "\n" + "Max arms: " + std::to_string(max_arms) + "\n\n";
 
-  return torso;
+    return torso;
 }
 
 int Torso::get_battery_compartments() {
@@ -286,10 +295,10 @@ Arm::Arm(string _name, int _model_number, double _cost, string _description, str
 
 string Arm::to_string()
 {
-  string arm = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
+    string arm = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
                "Description: " + description + "\n" + "Image filename: " + image_filename + "\n" + "Max power: " + std::to_string(max_power) + "\n\n";
 
-  return arm;
+    return arm;
 }
 
 double Arm::get_max_power() {
@@ -314,10 +323,10 @@ Locomotor::Locomotor(string _name, int _model_number, double _cost, string _desc
 
 string Locomotor::to_string()
 {
-  string locomotor = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
+    string locomotor = "Name: " + name + "\n" + "Model number: " + std::to_string(model_number) + "\n" + "Cost: " + std::to_string(cost) + "\n" +
                      "Description: " + description + "\n" + "Image filename: " + image_filename + "\n" + "Max power: " + std::to_string(max_power) + "\n\n";
 
-  return locomotor;
+    return locomotor;
 }
 
 double Locomotor::get_max_power() {
@@ -343,7 +352,7 @@ string Battery::to_string()
                    "Description: " + description + "\n" + "Image filename: " + image_filename + "\n" +
                    "Power availible: " + std::to_string(power_availible) + "\n" + "Max energy: " + std::to_string(max_energy) + "\n\n";
 
-  return battery;
+    return battery;
 }
 
 double Battery::get_power_availible() {
@@ -1551,9 +1560,6 @@ Controller *controller_p;
 //		  P A R T   D I A L O G
 // /////////////////////////////////
 
-void show_part_dialog_CB(Fl_Widget* w, void* p);
-void hide_part_dialog_CB(Fl_Widget* w, void* p);
-
 class part_dialog {
 	public :
 	part_dialog() {
@@ -2323,7 +2329,278 @@ void hide_list_models_dialog_CB(Fl_Widget* w, void* p) {
 
 
 // /////////////////////////////////
-//			      M E N U
+//   S A L E S  A S S O C I A T E
+// /////////////////////////////////
+
+class sales_associate_dialog {
+  public:
+    sales_associate_dialog() {
+      dialog = new Fl_Window(600, 480, "Sales Associate");
+
+      name_dl = new Fl_Input(150, 20, 280, 25, "Name: ");
+
+      employee_number_dl = new Fl_Input(150, 60, 280, 25, "Employee Number: ");
+
+      create = new Fl_Return_Button(150, 100, 100, 25, "Create");
+      create->callback((Fl_Callback *)create_sales_associate_CB, 0);
+
+      cancel = new Fl_Return_Button(300, 100, 100, 25, "Cancel");
+      cancel->callback((Fl_Callback *)hide_sales_associate_dialog_CB, 0);
+
+      dialog->end();
+      dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      name_dl->value(NULL);
+      employee_number_dl->value(NULL);
+    }
+
+    string name() {
+      return name_dl->value();
+    }
+
+    int employee_number() {
+      return atoi(employee_number_dl->value());
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *name_dl, *employee_number_dl;
+    Fl_Return_Button *create, *cancel;
+};
+
+sales_associate_dialog *sales_associate_dl;
+
+
+void show_sales_associate_dialog_CB(Fl_Widget* w, void* p) {
+  sales_associate_dl->show();
+}
+
+void hide_sales_associate_dialog_CB(Fl_Widget* w, void* p) {
+  sales_associate_dl->hide();
+}
+
+void create_sales_associate_CB(Fl_Widget* w, void* p) {
+  Sales_associate sales_associate(sales_associate_dl->name(), sales_associate_dl->employee_number());
+  save.get_shop()->add_sales_associate(sales_associate);
+  fl_message("Sales associate created!");
+  sales_associate_dl->hide();
+  sales_associate_dl->clear();
+}
+
+
+// /////////////////////////////////
+//         C U S T O M E R
+// /////////////////////////////////
+
+class customer_dialog {
+    public:
+      customer_dialog() {
+      dialog = new Fl_Window(600, 480, "Customer");
+
+      name_dl = new Fl_Input(150, 20, 280, 25, "Name: ");
+
+      customer_number_dl = new Fl_Input(150, 60, 280, 25, "Customer Number: ");
+
+      phone_number_dl = new Fl_Input(150, 100, 280, 25, "Phone Number: ");
+
+      email_address_dl = new Fl_Input(150, 140, 280, 25, "Email Address: ");
+
+      create = new Fl_Return_Button(150, 180, 100, 25, "Create");
+      create->callback((Fl_Callback *)create_customer_CB, 0);
+
+      cancel = new Fl_Return_Button(300, 180, 100, 25, "Cancel");
+      cancel->callback((Fl_Callback *)hide_customer_dialog_CB, 0);
+
+      dialog->end();
+      dialog->set_non_modal();
+      }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      name_dl->value(NULL);
+      customer_number_dl->value(NULL);
+    }
+
+    string name() {
+      return name_dl->value();
+    }
+
+    int customer_number() {
+      return atoi(customer_number_dl->value());
+    }
+
+    string phone_number() {
+      return phone_number_dl->value();
+    }
+
+    string email_address() {
+      return email_address_dl->value();
+    }
+
+  private:
+    Fl_Window *dialog;
+    Fl_Input *name_dl, *customer_number_dl, *phone_number_dl, *email_address_dl;
+    Fl_Return_Button *create, *cancel;
+};
+
+customer_dialog *customer_dl;
+
+void create_customer_CB(Fl_Widget* w, void* p) {
+  Customer customer(customer_dl->name(), customer_dl->customer_number(),customer_dl->phone_number(),customer_dl->email_address());
+  save.get_shop()->add_customer(customer);
+  fl_message("Customer created!");
+  customer_dl->hide();
+  customer_dl->clear();
+}
+
+void show_customer_dialog_CB(Fl_Widget* w, void* p) {
+  customer_dl->show();
+}
+
+void hide_customer_dialog_CB(Fl_Widget* w, void* p) {
+  customer_dl->hide();
+}
+
+
+
+// /////////////////////////////////
+//            O R D E R
+// /////////////////////////////////
+
+class order_dialog {
+  public:
+    order_dialog() {
+      dialog = new Fl_Window(600, 480, "Create Order");
+
+      order_number_dl = new Fl_Input(150, 20, 280, 25, "Order Number: ");
+
+      date_dl = new Fl_Input(150, 60, 280, 25, "Date (MMDDYY): ");
+
+      model_index_dl = new Fl_Input(150, 100, 280, 25, "Model Index:");
+    
+      quantity_dl = new Fl_Input(150, 140, 280, 25,"Quantity: ");
+
+      customer_number_dl = new Fl_Input(150, 180, 280, 25, "Customer number: ");
+          
+      employee_number_dl = new Fl_Input(150, 220, 280, 25, "Employee number: ");
+
+      list_models_dl = new Fl_Return_Button(250, 260, 150, 25, "List Models");
+      list_models_dl->callback((Fl_Callback *)list_models_dialog_CB, 0);
+
+      create = new Fl_Return_Button(150, 300, 100, 25, "Create");
+      create->callback((Fl_Callback *)create_order_dialog_CB, 0);
+
+      cancel = new Fl_Return_Button(300, 300, 100, 25, "Cancel");
+      cancel->callback((Fl_Callback *)hide_order_dialog_CB, 0);
+
+      dialog->end();
+      dialog->set_non_modal();
+    }
+
+    void show() {
+      dialog->show();
+    }
+
+    void hide() {
+      dialog->hide();
+    }
+
+    void clear() {
+      model_index_dl->value(NULL);
+      quantity_dl->value(NULL);
+      customer_number_dl->value(NULL);
+      employee_number_dl->value(NULL);
+    }
+
+    int order_number() {
+      return atoi(order_number_dl->value());
+    }
+
+    string date() {
+      return date_dl->value();
+    }
+
+    int model_index() {
+      return atoi(model_index_dl->value());
+    }
+
+    int quantity() {
+      return atoi(quantity_dl->value());
+    }
+
+    int customer_number() {
+      return atoi(customer_number_dl->value());
+    }
+
+    int employee_number() {
+      return atoi(employee_number_dl->value());
+    }
+    
+  private:
+  Fl_Window *dialog;
+  Fl_Input *order_number_dl, *date_dl, *model_index_dl, *quantity_dl, *customer_number_dl, *employee_number_dl;
+  Fl_Return_Button *list_models_dl, *create, *cancel;
+};
+
+order_dialog *order_dl;
+
+void create_order_dialog_CB(Fl_Widget* w, void* p) {
+  Order get_order(order_dl->order_number(), order_dl->date(), (save.get_shop()->get_customer(order_dl->customer_number() - 1)), (save.get_shop()->get_sales_associate(order_dl->employee_number() - 1)), (save.get_shop()->get_robot_model(order_dl->model_index()-1)), order_dl->quantity(), 1);
+  save.get_shop()->add_order(get_order);
+  fl_message("Order created!");
+  order_dl->hide();
+  order_dl->clear();
+}
+
+
+void list_models_dialog_CB(Fl_Widget* w, void* p) {
+    Fl_Window *win = new Fl_Window(600, 480);
+    stringstream os;
+
+    for(int i = 0; i< save.get_shop()->number_of_robot_models(); i++) {
+        os << save.get_shop()->robot_model_to_string(i) << "\n\n";
+    }
+
+    Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+    Fl_Text_Display *disp = new Fl_Text_Display(20,20,600-40,480-30, "List of Robot Models");
+
+    disp->buffer(buff);
+    win->resizable(*disp);
+    win->show();
+    buff->text((os.str()).c_str());    
+}
+
+
+void show_order_dialog_CB(Fl_Widget* w, void* p) {
+  order_dl->show();
+}
+
+void hide_order_dialog_CB(Fl_Widget* w, void* p) {
+  order_dl->hide();
+}
+
+
+
+
+// /////////////////////////////////
+//			       M E N U
 // /////////////////////////////////
 
 Fl_Menu_Item menuitems[] = {
@@ -2340,9 +2617,9 @@ Fl_Menu_Item menuitems[] = {
     { "Pre&ferences", 0, (Fl_Callback *) Exit_CB },
     { 0 }, */
   { "&Create", 0, 0, 0, FL_SUBMENU },
-//  	{ "&Order", 0, (Fl_Callback *) Exit_CB },
-//    { "&Customer", 0, (Fl_Callback *) Exit_CB },
-//    { "&Sales Associate", 0, (Fl_Callback *) Exit_CB },
+  	{ "&Order", 0, (Fl_Callback *) show_order_dialog_CB },
+    { "&Customer", 0, (Fl_Callback *) show_customer_dialog_CB },
+    { "&Sales Associate", 0, (Fl_Callback *) show_sales_associate_dialog_CB },
     { "Robot &Model", 0, (Fl_Callback *) show_model_dialog_CB },
     { "&Robot Component", 0, (Fl_Callback *) show_part_dialog_CB },
     { 0 },
@@ -2377,6 +2654,9 @@ int main() {
   battery_dl = new battery_dialog{};
   model_dl = new model_dialog{};
   list_models_dl = new list_models_dialog{};
+  sales_associate_dl = new sales_associate_dialog{};
+  customer_dl = new customer_dialog{};
+  order_dl = new order_dialog{};
 
 	fl_register_images();
 	win = new Fl_Window(X, Y, "Robbie Robot Shop");
